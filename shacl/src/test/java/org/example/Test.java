@@ -50,7 +50,7 @@ public class Test {
          */
         DataStream<Graph> covidStream = generator.getCovidStream();
 
-        String SHAPES = "/Users/weiqinxu/Documents/GitHub/cmold/shacl/src/test/java/org/example/shapes.ttl";
+        String SHAPES = "./shacl/src/test/java/org/example/shapes.ttl";
 
         org.apache.jena.graph.Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES);
         Shapes shapes = Shapes.parse(shapesGraph);
