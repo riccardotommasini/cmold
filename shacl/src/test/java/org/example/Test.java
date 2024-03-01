@@ -55,12 +55,14 @@ public class Test {
         org.apache.jena.graph.Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES);
         Shapes shapes = Shapes.parse(shapesGraph);
 
+        //Create shacl validation task
         SHACL121Task task = new SHACL121Task.SHACL121TaskBuilder().in(observationStream).out("http://org.report").shape(shapes).build();
 
         observationStream.addConsumer((el, ts) -> System.out.println("Observation:  \n" + el + " @ " + ts));
         tracingStream.addConsumer((el, ts) -> System.out.println("Tracing:  \n" + el + " @ " + ts));
         covidStream.addConsumer((el, ts) -> System.out.println("Covid:  \n" + el + " @ " + ts));
 
+        //Get the output stream and bind it to system.out
         DataStream<ValidationReport> out = task.getOutputStream();
         out.addConsumer((r, t) -> {
             System.out.println("-------------------------------------------");
