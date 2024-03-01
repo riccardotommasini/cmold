@@ -7,6 +7,10 @@
     <groupId>org.example</groupId>
     <artifactId>cmold</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>shacl</module>
+    </modules>
 
     <repositories>
         <repository>
