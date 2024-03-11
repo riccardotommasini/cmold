@@ -61,12 +61,13 @@ public class JenaTest {
             j_g.add(new Triple(transformNode(triple.getSubject()), transformNode(triple.getPredicate()), transformNode(triple.getObject())));
         }
 
-        //org.apache.commons.rdf.jena.JenaRDF jena_rdf = new org.apache.commons.rdf.jena.JenaRDF();
-        //Graph j_graph = jena_rdf.asJenaGraph(graph);
+        org.apache.commons.rdf.jena.JenaRDF jena_rdf = new org.apache.commons.rdf.jena.JenaRDF();
+        Graph j_graph = jena_rdf.asJenaGraph(graph);
 
         Shapes shapes = Shapes.parse(shapesGraph);
 
         ValidationReport report = ShaclValidator.get().validate(shapes, dataGraph);
+        Graph r_g_j = report.getGraph();
         report.getEntries().forEach(re -> System.out.println(re.message()));
         System.out.println("-----------------------------------------------------------------");
         ShLib.printReport(report);
