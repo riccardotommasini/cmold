@@ -23,6 +23,8 @@ public class ValidatedContentGraph implements ValidatedContent<Graph, Graph> {
 
     private Shapes shapes;
 
+    private ValidationOption validation_option;
+
     public static org.apache.jena.graph.Node transformTerm2JenaNode(org.apache.commons.rdf.api.RDFTerm term){
         if(term instanceof IRI){
             return org.apache.jena.graph.NodeFactory.createURI(((IRI) term).getIRIString());
@@ -108,6 +110,7 @@ public class ValidatedContentGraph implements ValidatedContent<Graph, Graph> {
         //report.add();
         return g;
     }
+
     @Override
     public Graph coalesce() {
         if (elements.size() == 1){
@@ -150,5 +153,15 @@ public class ValidatedContentGraph implements ValidatedContent<Graph, Graph> {
     @Override
     public Shapes getShapes() {
         return this.shapes;
+    }
+
+    @Override
+    public void setValidationOption(ValidationOption vo) {
+        this.validation_option = vo;
+    }
+
+    @Override
+    public ValidationOption getValidationOption(ValidationOption vo) {
+        return this.validation_option;
     }
 }

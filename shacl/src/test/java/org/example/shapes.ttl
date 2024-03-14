@@ -10,7 +10,7 @@ ex:PersonShape
 	sh:targetClass covid:Person ;    # Applies to all persons
 	sh:property [                 # _:b1
 		sh:path covid:isin ;           # constrains the values of ex:ssn
-		sh:maxCount 1 ;
+		sh:minCount 2 ;
 		sh:class covid:Building ;
 	] ;
 	sh:closed true ;
