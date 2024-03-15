@@ -171,6 +171,8 @@ public class StreamGenerator {
         return graph;
     }
 
+
+
     public void stopStreaming() {
         this.isStreaming.set(false);
     }
