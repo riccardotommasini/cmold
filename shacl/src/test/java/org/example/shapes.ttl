@@ -9,8 +9,8 @@ ex:PersonShape
 	a sh:NodeShape ;
 	sh:targetClass covid:Person ;    # Applies to all persons
 	sh:property [                 # _:b1
-		sh:path covid:isin ;           # constrains the values of ex:ssn
+		sh:path covid:isin ;
 		sh:maxCount 1 ;
-		sh:class covid:Building ;
+		sh:class covid:Room ;
 	] ;
 	sh:ignoredProperties ( rdf:type ) .
