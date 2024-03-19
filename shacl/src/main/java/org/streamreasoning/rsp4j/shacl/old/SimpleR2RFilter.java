@@ -1,4 +1,4 @@
-package org.example;
+package org.streamreasoning.rsp4j.shacl.old;
 
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 import org.streamreasoning.rsp4j.api.querying.result.SolutionMapping;

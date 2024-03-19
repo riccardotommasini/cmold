@@ -1,4 +1,4 @@
-@prefix ex:   <http://example.com/ns#> .
+@prefix ex:   <http://test/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
@@ -7,7 +7,7 @@
 
 ex:PersonShape
 	a sh:NodeShape ;
-	sh:targetClass covid:Person ;    # Applies to all persons
+	sh:targetClass ex:Black ;    # Applies to all persons
 	sh:property [                 # _:b1
 		sh:path covid:isin ;           # constrains the values of ex:ssn
 		sh:maxCount 1 ;

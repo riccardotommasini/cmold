@@ -1,4 +1,4 @@
-package org.example;
+package org.streamreasoning.rsp4j.shacl.old;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.rdf.api.Graph;

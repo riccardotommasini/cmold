@@ -27,16 +27,15 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
     //Default Validation Option to stream level
     private ValidationOption validation_option;
 
-
-
     public static Graph validateJenaGraph(Shapes shapes, Graph g){
         ValidationReport report = ShaclValidator.get().validate(shapes, g);
         Graph r_j_g = report.getGraph();
         return r_j_g;
     }
 
-    public ValidatedContentJenaGraph(Time instance) {
+    public ValidatedContentJenaGraph(Time instance, Shapes shapes) {
         this.instance = instance;
+        this.shapes = shapes;
         this.elements = new HashSet<>();
         this.reports = new HashSet<>();
         this.shapes = Shapes.parse(Factory.createDefaultGraph());

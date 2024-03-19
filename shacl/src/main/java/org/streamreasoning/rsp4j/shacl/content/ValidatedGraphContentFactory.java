@@ -2,6 +2,7 @@ package org.streamreasoning.rsp4j.shacl.content;
 
 import org.apache.jena.graph.Factory;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.shacl.Shapes;
 import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.content.ContentFactory;
@@ -11,10 +12,12 @@ import org.streamreasoning.rsp4j.yasper.content.EmptyContent;
 
 public class ValidatedGraphContentFactory implements ContentFactory<Graph, ValidatedGraph> {
 
-    Time time;
+    private Time time;
+    private Shapes shapes;
 
-    public ValidatedGraphContentFactory(Time time) {
+    public ValidatedGraphContentFactory(Time time, Shapes shapes) {
         this.time = time;
+        this.shapes = shapes;
     }
 
 
@@ -26,6 +29,6 @@ public class ValidatedGraphContentFactory implements ContentFactory<Graph, Valid
 
     @Override
     public ValidatedContent<Graph, ValidatedGraph> create() {
-        return new ValidatedContentJenaGraph(time);
+        return new ValidatedContentJenaGraph(time, shapes);
     }
 }

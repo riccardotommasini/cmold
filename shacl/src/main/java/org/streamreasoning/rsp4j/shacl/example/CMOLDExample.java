@@ -1,10 +1,12 @@
-package org.example;
+package org.streamreasoning.rsp4j.shacl.example;
 
-import org.apache.commons.rdf.api.Graph;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shacl.Shapes;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
-import org.streamreasoning.rsp4j.api.operators.r2r.utils.R2RPipe;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
@@ -14,70 +16,64 @@ import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import org.streamreasoning.rsp4j.operatorapi.ContinuousProgram;
 import org.streamreasoning.rsp4j.operatorapi.TaskOperatorAPIImpl;
-import org.streamreasoning.rsp4j.operatorapi.table.BindingStream;
-import org.streamreasoning.rsp4j.yasper.content.GraphContentFactory;
+import org.streamreasoning.rsp4j.shacl.content.ValidatedGraph;
+import org.streamreasoning.rsp4j.shacl.content.ValidatedGraphContentFactory;
 import org.streamreasoning.rsp4j.yasper.querying.operators.Rstream;
-import org.streamreasoning.rsp4j.yasper.querying.operators.r2r.*;
 import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.CSPARQLStreamToRelationOp;
 
-public class CustomR2RExample {
+public class CMOLDExample {
 
     public static void main(String[] args) throws InterruptedException {
-        StreamGenerator generator = new StreamGenerator();
-        DataStream<Graph> inputStream = generator.getStream("http://test/stream1");
 
+        JenaStreamGenerator generator = new JenaStreamGenerator();
+
+        DataStream<Graph> inputStream = generator.getStream("http://test/stream1");
         // define output stream
-        BindingStream outStream = new BindingStream("out");
+        JenaBindingStream outStream = new JenaBindingStream("out");
 
         // Engine properties
         Report report = new ReportImpl();
         report.add(new OnWindowClose());
-        //        report.add(new NonEmptyContent());
-        //        report.add(new OnContentChange());
-        //        report.add(new Periodic());
 
         Tick tick = Tick.TIME_DRIVEN;
         ReportGrain report_grain = ReportGrain.SINGLE;
         Time instance = new TimeImpl(0);
 
+        Graph shapesGraph = RDFDataMgr.loadGraph(CMOLDExample.class.getResource("/shapes.ttl").getPath());
+        Shapes shapes = Shapes.parse(shapesGraph);
+
+        ValidatedGraphContentFactory validatedGraphContentFactory = new ValidatedGraphContentFactory(instance, shapes);
+
         // Window (S2R) declaration incl. window name, window range (1s), window step (1s), start time
         // (instance) etc.
-        StreamToRelationOp<Graph, Graph> build =
+
+        StreamToRelationOp<Graph, ValidatedGraph> build =
                 new CSPARQLStreamToRelationOp<>(
                         RDFUtils.createIRI("w1"),
                         1000,
                         1000,
-                        instance,
-                        tick,
-                        report,
-                        report_grain,
-                        new GraphContentFactory(instance));
+                        instance, tick, report, report_grain,
+                        validatedGraphContentFactory);
 
-        // R2R
-        VarOrTerm s = new VarImpl("color");
-        VarOrTerm p = new TermImpl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-        VarOrTerm o = new VarImpl("type");
-        TP tp = new TP(s, p, o);
-
-        // Define a filter that filters out all the greens
-        SimpleR2RFilter<Binding> filter = new SimpleR2RFilter<>(binding -> binding.value(o).equals(RDFUtils.createIRI("http://test/Green")));
+        JenaR2R r2r = new JenaR2R("SELECT * WHERE {GRAPH ?g {?s ?p ?o }}");
 
         // Create a pipe of two r2r operators, TP and filter
-        R2RPipe<Graph, Binding> r2r = new R2RPipe<>(tp, filter);
 
-        TaskOperatorAPIImpl<Graph, Graph, Binding, Binding> t =
+        TaskOperatorAPIImpl<Graph, ValidatedGraph, Binding, Binding> t =
                 new TaskOperatorAPIImpl.TaskBuilder()
                         .addS2R("http://test/stream1", build, "w1")
                         .addR2R("w1", r2r)
                         .addR2S("out", new Rstream<Binding, Binding>())
                         .build();
 
-        ContinuousProgram<Graph, Graph, Binding, Binding> cp =
+        ContinuousProgram<Graph, ValidatedGraph, Binding, Binding> cp =
                 new ContinuousProgram.ContinuousProgramBuilder()
                         .in(inputStream)
                         .addTask(t)
+                        .setSDS(new SDSJena())
                         .out(outStream)
                         .build();
+
 
         outStream.addConsumer((el, ts) -> System.out.println(el + " @ " + ts));
         generator.startStreaming();
