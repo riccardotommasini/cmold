@@ -19,4 +19,12 @@ public class ValidatedGraph {
     public Graph getContent(){
         return this.content;
     }
+
+    @Override
+    public String toString(){
+        String str = new String();
+        str += "Content size: " + content.size();
+        str += "Validate report size: " + report.size();
+        return str;
+    }
 }

@@ -5,12 +5,18 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix covid: <http://rsp4j.io/covid#> .
 
-ex:PersonShape
+ex:ObjectShape
 	a sh:NodeShape ;
-	sh:targetClass ex:Black ;    # Applies to all persons
-	sh:property [                 # _:b1
-		sh:path covid:isin ;           # constrains the values of ex:ssn
+	sh:targetClass ex:Object ;
+	sh:property [
+		sh:path ex:hasColor ;
+		sh:minCount 1 ;
 		sh:maxCount 1 ;
-		sh:class covid:Building ;
+		sh:class ex:Color ;
 	] ;
-	sh:ignoredProperties ( rdf:type ) .
+	sh:property [
+        sh:path ex:hasShape ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class ex:Shape ;
+    ] .

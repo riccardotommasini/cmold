@@ -4,6 +4,9 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
@@ -21,9 +24,13 @@ import org.streamreasoning.rsp4j.shacl.content.ValidatedGraphContentFactory;
 import org.streamreasoning.rsp4j.yasper.querying.operators.Rstream;
 import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.CSPARQLStreamToRelationOp;
 
+import java.util.Collections;
+import java.util.List;
+
 public class CMOLDExample {
 
     public static void main(String[] args) throws InterruptedException {
+
 
         JenaStreamGenerator generator = new JenaStreamGenerator();
 

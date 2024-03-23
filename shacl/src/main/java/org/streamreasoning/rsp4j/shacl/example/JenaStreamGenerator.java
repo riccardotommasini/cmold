@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.shacl.example;
 
 import org.apache.commons.rdf.api.RDF;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Node;
@@ -19,7 +20,10 @@ public class JenaStreamGenerator {
     private static final String PREFIX = "http://test/";
     private static final Long TIMEOUT = 1000l;
 
-    private final String[] colors = new String[]{"Blue", "Green", "Red", "Yellow", "Black", "Grey", "White"};
+    private final String[] colors = new String[]{"blue", "green", "red", "yellow", "black", "grey", "white"};
+    private final String[] shapes = new String[]{"sphere", "cube", "tetrahedron"};
+    private final String[] materiaux = new String[]{"metal", "glass", "plastique"};
+    private final String[] roughnesses = new String[]{"N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12"};
     private final Map<String, DataStream<Graph>> activeStreams;
     private final AtomicBoolean isStreaming;
     private final Random randomGenerator;
@@ -72,16 +76,71 @@ public class JenaStreamGenerator {
         RDF instance = RDFUtils.getInstance();
         Graph graph = GraphMemFactory.createGraphMem();
 
-        Node p = NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        Node object_concept = NodeFactory.createURI(PREFIX + "Object");
+        Node color_concept = NodeFactory.createURI(PREFIX + "Color");
+        Node shape_concept = NodeFactory.createURI(PREFIX + "Shape");
+        Node mat_concept = NodeFactory.createURI(PREFIX + "Material");
+        Node roughness_level_concept = NodeFactory.createURI(PREFIX + "RoughnessLevel");
 
-        graph.add(NodeFactory.createURI(PREFIX + "S" + streamIndexCounter.incrementAndGet()), p, NodeFactory.createURI(PREFIX + selectRandomColor()));
-        graph.add(NodeFactory.createURI(PREFIX + "S" + streamIndexCounter.incrementAndGet()), p, NodeFactory.createURI(PREFIX + "Black"));
+        Node a = NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+
+        Node object = NodeFactory.createURI(PREFIX + "object" + streamIndexCounter.incrementAndGet());
+
+        graph.add(object, a, object_concept);
+
+        //50% chance has a color
+        Random rand = new Random();
+        if(rand.nextInt(100) < 50){
+            Node rcolor = NodeFactory.createURI(PREFIX + selectRandomColor());
+            graph.add(object, NodeFactory.createURI(PREFIX + "hasColor"), rcolor);
+            graph.add(rcolor, a, color_concept);
+        }
+
+        //50% chance has a shape
+        if(rand.nextInt(100) < 50){
+            Node rshape = NodeFactory.createURI(PREFIX + selectRandomShape());
+            graph.add(object, NodeFactory.createURI(PREFIX + "hasShape"), rshape);
+            graph.add(rshape, a, shape_concept);
+        }
+
+        //Has material
+        Node mat = NodeFactory.createURI(PREFIX + selectRandomMaterial());
+        graph.add(object, NodeFactory.createURI(PREFIX + "hasMaterial"), mat);
+        graph.add(mat, a, mat_concept);
+
+        //Has weight
+        double rangeMin = 2.0;
+        double rangeMax = 7.0;
+        Node weight = NodeFactory.createLiteral(String.valueOf(rangeMin + (rangeMax - rangeMin) * randomGenerator.nextDouble()), XSDDatatype.XSDdouble);
+        graph.add(object, NodeFactory.createURI(PREFIX + "hasWeight"), weight);
+
+        //Has surface roughness
+        Node roughness = NodeFactory.createURI(PREFIX + selectRandomRoughness());
+        graph.add(object, NodeFactory.createURI(PREFIX + "hasSurfaceRoughness"), roughness);
+        graph.add(roughness, a, roughness_level_concept);
+
+
         stream.put(graph, ts);
     }
 
     private String selectRandomColor() {
         int randomIndex = randomGenerator.nextInt((colors.length));
         return colors[randomIndex];
+    }
+
+    private String selectRandomShape() {
+        int randomIndex = randomGenerator.nextInt((shapes.length));
+        return shapes[randomIndex];
+    }
+
+    private String selectRandomMaterial() {
+        int randomIndex = randomGenerator.nextInt((materiaux.length));
+        return materiaux[randomIndex];
+    }
+
+    private String selectRandomRoughness() {
+        int randomIndex = randomGenerator.nextInt((roughnesses.length));
+        return roughnesses[randomIndex];
     }
 
     public void stopStreaming() {

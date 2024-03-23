@@ -11,6 +11,7 @@ import org.streamreasoning.rsp4j.shacl.api.ValidatedContent;
 import org.apache.jena.graph.Factory;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,7 +39,6 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
         this.shapes = shapes;
         this.elements = new HashSet<>();
         this.reports = new HashSet<>();
-        this.shapes = Shapes.parse(Factory.createDefaultGraph());
         //Default Validation Option to stream level
         this.validation_option = ValidationOption.STREAM_LEVEL;
     }
@@ -64,11 +64,6 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
         return last_timestamp_changed;
     }
 
-
-    @Override
-    public String toString() {
-        return elements.toString();
-    }
 
 
     @Override
@@ -140,6 +135,20 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
     @Override
     public ValidationOption getValidationOption(ValidationOption vo) {
         return this.validation_option;
+    }
+
+    @Override
+    public String toString(){
+        String str = new String();
+        str += "Content size: ";
+        for(Graph g: elements){
+            str += g.size() + " ";
+        }
+        str += "Validate report size: ";
+        for(Graph g: reports){
+            str += g.size() + " ";
+        }
+        return str;
     }
 
 }

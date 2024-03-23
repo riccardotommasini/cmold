@@ -1,5 +1,6 @@
 package org.streamreasoning.rsp4j.shacl.example;
 
+import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -40,9 +41,11 @@ public class JenaR2R implements RelationToRelationOperator<ValidatedGraph, Bindi
     public Stream<Binding> eval(Stream<ValidatedGraph> sds) {
         Node aDefault = NodeFactory.createURI("default");
         DatasetGraph dg = new DatasetGraphInMemory();
+
         sds.forEach(g -> {
             dg.addGraph(aDefault, g.content);
         });
+
         QueryExecution queryExecution = QueryExecutionFactory.create(query, DatasetImpl.wrap(dg));
         ResultSet resultSet = queryExecution.execSelect();
 
