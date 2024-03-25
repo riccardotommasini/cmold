@@ -1,6 +1,8 @@
 package org.streamreasoning.rsp4j.shacl.content;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.shacl.ShaclValidator;
@@ -32,6 +34,14 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
         ValidationReport report = ShaclValidator.get().validate(shapes, g);
         Graph r_j_g = report.getGraph();
         return r_j_g;
+    }
+
+    public static boolean checkViolation(Graph g){
+        if(g.contains(NodeFactory.createVariable("?x"), NodeFactory.createURI("http://www.w3.org/ns/shacl#conforms"), NodeFactory.createLiteral("false", XSDDatatype.XSDboolean))){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public ValidatedContentJenaGraph(Time instance, Shapes shapes) {
@@ -84,7 +94,7 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
 
         } else {
             Model m = ModelFactory.createDefaultModel();
-            elements.stream().map(ModelFactory::createModelForGraph).forEach(m::union);
+            elements.stream().map(ModelFactory::createModelForGraph).forEach(m::add);
 
             Graph g = m.getGraph();
 

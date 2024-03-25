@@ -57,7 +57,7 @@ public class CMOLDExample {
         StreamToRelationOp<Graph, ValidatedGraph> build =
                 new CSPARQLStreamToRelationOp<>(
                         RDFUtils.createIRI("w1"),
-                        1000,
+                        30000,
                         1000,
                         instance, tick, report, report_grain,
                         validatedGraphContentFactory);
