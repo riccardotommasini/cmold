@@ -1,5 +1,6 @@
 package org.streamreasoning.rsp4j.shacl.content;
 
+import com.ibm.icu.impl.ICUService;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
@@ -62,10 +63,16 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
     public void add(Graph e) {
         Graph r_e = validateJenaGraph(shapes, e);
 
-        elements.add(e);
         if(this.validation_option == ValidationOption.STREAM_LEVEL){
-            reports.add(r_e);
+            if(!checkViolation(r_e)){
+                elements.add(e);
+            }
+        }else{
+            elements.add(e);
         }
+
+        reports.add(r_e);
+
         this.last_timestamp_changed = instance.getAppTime();
     }
 
@@ -88,6 +95,9 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
 
             }else if(this.validation_option == ValidationOption.CONTENT_LEVEL){
                 r_g = validateJenaGraph(shapes, g);
+                if(checkViolation(r_g)){
+                    g = Factory.createDefaultGraph();
+                }
             }
 
             return new ValidatedGraph(r_g, g);
@@ -101,12 +111,15 @@ public class ValidatedContentJenaGraph implements ValidatedContent<Graph, Valida
             Graph r_g = Factory.createDefaultGraph();
             if(this.validation_option == ValidationOption.STREAM_LEVEL){
                 Model r_m = ModelFactory.createDefaultModel();
-                reports.stream().map(ModelFactory::createModelForGraph).forEach(r_m::union);
+                reports.stream().map(ModelFactory::createModelForGraph).forEach(r_m::add);
 
                 r_g = r_m.getGraph();
 
             }else if(this.validation_option == ValidationOption.CONTENT_LEVEL){
                 r_g = validateJenaGraph(shapes, g);
+                if(checkViolation(r_g)){
+                    g = Factory.createDefaultGraph();
+                }
             }
 
             return new ValidatedGraph(r_g, g);

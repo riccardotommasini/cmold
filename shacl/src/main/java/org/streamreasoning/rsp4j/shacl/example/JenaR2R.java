@@ -46,6 +46,8 @@ public class JenaR2R implements RelationToRelationOperator<ValidatedGraph, Bindi
             dg.addGraph(aDefault, g.content);
         });
 
+        long start_query_time = System.nanoTime();
+
         QueryExecution queryExecution = QueryExecutionFactory.create(query, DatasetImpl.wrap(dg));
         ResultSet resultSet = queryExecution.execSelect();
 
@@ -57,6 +59,11 @@ public class JenaR2R implements RelationToRelationOperator<ValidatedGraph, Bindi
             res.add(rb.getBinding());
 
         }
+
+        long end_query_time = System.nanoTime();
+
+        System.out.println("Graph size: " + dg.getGraph(aDefault).size());
+        System.out.println("Query time: " + (end_query_time - start_query_time));
 
         return res.stream();
     }
