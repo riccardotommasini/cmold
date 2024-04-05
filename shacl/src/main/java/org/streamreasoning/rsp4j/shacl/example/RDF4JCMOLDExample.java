@@ -38,7 +38,7 @@ public class RDF4JCMOLDExample {
 
         DataStream<Model> inputStream = generator.getStream("http://test/stream1");
         // define output stream
-        RDF4JBindingSetStream outStream = new RDF4JBindingSetStream("out");
+        RDF4JBindingSetStream outStream = new RDF4JBindingSetStream("http://out");
 
         // Engine properties
         Report report = new ReportImpl();
