@@ -21,6 +21,7 @@ import org.streamreasoning.rsp4j.operatorapi.ContinuousProgram;
 import org.streamreasoning.rsp4j.operatorapi.TaskOperatorAPIImpl;
 import org.streamreasoning.rsp4j.shacl.content.ValidatedGraph;
 import org.streamreasoning.rsp4j.shacl.content.ValidatedGraphContentFactory;
+import org.streamreasoning.rsp4j.shacl.content.ValidatedGraphContentFactoryCrossContent;
 import org.streamreasoning.rsp4j.yasper.querying.operators.Rstream;
 import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.CSPARQLStreamToRelationOp;
 
@@ -34,7 +35,7 @@ public class CMOLDExample {
         LogManager.shutdown();
 
 
-        JenaStreamGenerator generator = new JenaStreamGenerator();
+        JenaStreamGeneratorCrossContent generator = new JenaStreamGeneratorCrossContent();
 
         DataStream<Graph> inputStream = generator.getStream("http://test/stream1");
         // define output stream
@@ -51,7 +52,7 @@ public class CMOLDExample {
         Graph shapesGraph = RDFDataMgr.loadGraph(CMOLDExample.class.getResource("/shapes.ttl").getPath());
         Shapes shapes = Shapes.parse(shapesGraph);
 
-        ValidatedGraphContentFactory validatedGraphContentFactory = new ValidatedGraphContentFactory(instance, shapes);
+        ValidatedGraphContentFactoryCrossContent validatedGraphContentFactory = new ValidatedGraphContentFactoryCrossContent(instance, shapes);
 
         // Window (S2R) declaration incl. window name, window range (1s), window step (1s), start time
         // (instance) etc.
@@ -59,13 +60,13 @@ public class CMOLDExample {
         StreamToRelationOp<Graph, ValidatedGraph> build =
                 new CSPARQLStreamToRelationOp<>(
                         RDFUtils.createIRI("w1"),
-                        1000000,
+                        1000,
                         1000,
                         instance, tick, report, report_grain,
                         validatedGraphContentFactory);
 
         JenaR2R r2r = new JenaR2R("prefix ex: <http://test/>\n" +
-                "Select * where {GRAPH ?g {?o ex:hasMaterial ?m .  ?o ex:hasSurfaceRoughness ?r . ?o ex:hasColor ?c . ?o ex:hasShape ?s . }}\n");
+                "Select * where {GRAPH ?g {?s ?p ?o .}}\n");
 
         // Create a pipe of two r2r operators, TP and filter
 

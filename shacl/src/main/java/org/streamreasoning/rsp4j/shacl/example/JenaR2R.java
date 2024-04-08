@@ -64,6 +64,7 @@ public class JenaR2R implements RelationToRelationOperator<ValidatedGraph, Bindi
 
         System.out.println("Graph size: " + dg.getGraph(aDefault).size());
         System.out.println("Query time: " + (end_query_time - start_query_time));
+        System.out.println();
 
         return res.stream();
     }

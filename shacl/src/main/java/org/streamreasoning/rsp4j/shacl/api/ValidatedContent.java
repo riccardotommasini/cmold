@@ -7,7 +7,7 @@ import org.streamreasoning.rsp4j.shacl.content.ValidatedGraph;
 public interface ValidatedContent<I, O> extends Content<I, O> {
 
     enum ValidationOption {
-        STREAM_LEVEL,
+        ELEMENT_LEVEL,
         CONTENT_LEVEL
     }
     void setShapes(Shapes shapes);

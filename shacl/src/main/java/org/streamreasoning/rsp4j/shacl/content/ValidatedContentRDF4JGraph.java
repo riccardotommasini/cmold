@@ -26,16 +26,16 @@ public class ValidatedContentRDF4JGraph implements ValidatedContentRDF4J<Model, 
 
 
     Time instance;
-    private Set<Model> elements;
-    private Set<Model> reports;
-    private long last_timestamp_changed;
+    protected Set<Model> elements;
+    protected Set<Model> reports;
+    protected long last_timestamp_changed;
 
-    private Model shapes;
+    protected Model shapes;
 
     //Default Validation Option to stream level
-    private ValidationOption validation_option;
+    protected ValidationOption validation_option;
 
-    public static void validateRDF4JGraph(Model shapes, Model g) throws RepositoryException{
+    public static void validateRDF4JGraph(Model shapes, Model g){
         ShaclSail shaclSail = new ShaclSail(new MemoryStore());
         Repository repo = new SailRepository(shaclSail);
 
@@ -77,7 +77,7 @@ public class ValidatedContentRDF4JGraph implements ValidatedContentRDF4J<Model, 
         this.elements = new HashSet<>();
         this.reports = new HashSet<>();
         //Default Validation Option to stream level
-        this.validation_option = ValidationOption.STREAM_LEVEL;
+        this.validation_option = ValidationOption.ELEMENT_LEVEL;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ValidatedContentRDF4JGraph implements ValidatedContentRDF4J<Model, 
     @Override
     public void add(Model e) {
 
-        if(this.validation_option == ValidationOption.STREAM_LEVEL){
+        if(this.validation_option == ValidationOption.ELEMENT_LEVEL){
             try{
                 validateRDF4JGraph(shapes, e);
                 elements.add(e);
@@ -121,7 +121,7 @@ public class ValidatedContentRDF4JGraph implements ValidatedContentRDF4J<Model, 
 
             //To be uncomment
             Model r_g = new TreeModel();
-            if(this.validation_option == ValidationOption.STREAM_LEVEL){
+            if(this.validation_option == ValidationOption.ELEMENT_LEVEL){
                 r_g = reports.stream().findFirst().orElse(factory.createEmptyModel());
 
             }else if(this.validation_option == ValidationOption.CONTENT_LEVEL){
@@ -144,7 +144,7 @@ public class ValidatedContentRDF4JGraph implements ValidatedContentRDF4J<Model, 
 
 
             Model r_g = factory.createEmptyModel();
-            if(this.validation_option == ValidationOption.STREAM_LEVEL){
+            if(this.validation_option == ValidationOption.ELEMENT_LEVEL){
                 reports.stream().forEach(r_g::addAll);
 
             }else if(this.validation_option == ValidationOption.CONTENT_LEVEL){

@@ -6,7 +6,7 @@ import org.streamreasoning.rsp4j.api.secret.content.Content;
 
 public interface ValidatedContentRDF4J<I, O> extends Content<I, O> {
     enum ValidationOption {
-        STREAM_LEVEL,
+        ELEMENT_LEVEL,
         CONTENT_LEVEL
     }
     void setShapes(Model shapes);
