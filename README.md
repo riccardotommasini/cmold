@@ -4,7 +4,7 @@ This repository introduces our proof-of-concept based on RSP4J. Figure below sho
 architecture from the original paper, extended with the Shape module (red). The other submodules in
 red are those impacted by our extension.
 
-![cmold](./cmold-arc.1.png)
+![cmold](./cmold-arch.1.png)
 
 The main innovation of our PoC corresponds to integrating the two semantics into
 RSP4J using two external libraries, i.e., Jena and RDF4J, for validation. Before dis-
