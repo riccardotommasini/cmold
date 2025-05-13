@@ -1,6 +1,11 @@
-This repository introduces our proof-of-concept based on RSP4J. Figure 1 shows the library
+
+
+This repository introduces our proof-of-concept based on RSP4J. Figure below shows the library
 architecture from the original paper, extended with the Shape module (red). The other submodules in
 red are those impacted by our extension.
+
+![cmold](./cmold-arc.1.png)
+
 The main innovation of our PoC corresponds to integrating the two semantics into
 RSP4J using two external libraries, i.e., Jena and RDF4J, for validation. Before dis-
 cussing the validation process, we briefly recap RSP4J windowing primitives (Execution
@@ -17,7 +22,7 @@ sions of the content abstraction based on Jena and RDF4J.
 
 ## Jena Integration
 
-[./algorithm1.png](./algorithm1.png)
+![./algorithm1.png](./algorithm1.png)
 
 Jena extension Algorithm 1 illustrates how to coalesce a window’s content with the
 Apache Jena library. This coalesce procedure varies depending on the stream validation
@@ -34,7 +39,7 @@ merged graph and the non-violation graph.
 
 ## RDF4J Integration
 
-[./algorithm2.png](./algorithm2.png)
+![./algorithm2.png](./algorithm2.png)
 
 
 RDF4J extension Algorithm 2 is an Eclipse RDF4J-enhanced version of the win-
@@ -54,7 +59,7 @@ output the union of the graph elements and an empty validation report.
 
 ## Preliminary Comparison
 
-[./eval.png](./eval.png)
+![./eval.png](./eval.png)
 
 We presents a preliminary evaluation of our prototype. Our experimentation
 has been conducted on a Mac Book Pro with an 8-core M2 processor, 16G RAM and a
