@@ -22,9 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by Riccardo on 03/08/16.
- */
 public class FullEngineTestCSPARQL {
 
     private static RDF instance;
